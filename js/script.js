@@ -85,8 +85,6 @@ function showMovies(movies) {
   });
 }
 
-
-// Fetch movies by pages
 // Fetch movies by pages
 async function fetchMovies(url, isLoadMore = false) {
   loadBtn.style.display = 'none';
@@ -236,4 +234,5 @@ async function loadMovieDetails() {
     container.innerHTML = "<h2>Error loading details.</h2>";
     console.error(error);
   }
+
 }
