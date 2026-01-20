@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Movie Show</title>
+    <link rel="shortcut icon" href="assets/images/fav.png" type="image/x-icon">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css">
+    <link rel="stylesheet" href="css/main.css">
+  </head>
+  <body>
+    <!-- Header START -->
+    <header>
+      <a href="index.html" class="logo">Movie Show</a>
+      <div class="controls">
+        <button id="theme-toggle"><i class="fas fa-moon"></i></button>
+      </div>
+    </header>
+    <!-- Header END -->
+    <!-- Nav START -->
+    <nav class="navbar">
+      <div class="search-container">
+        <input type="text" id="search-input" placeholder="Search for movies...">
+        <button id="search-btn"><i class="fa-solid fa-magnifying-glass fa-beat"></i></button>
+      </div>
+      <!-- filters -->
+      <div class="filters">
+        <select id="genre-filter">
+          <option value="">All Genres</option>
+        </select>
+        <select id="year-filter">
+          <option value="">Any Year</option>
+        </select>
+        <select id="rate-filter">
+          <option value="">Any Rating</option>
+          <option value="9">9+</option>
+          <option value="8">8+</option>
+          <option value="7">7+</option>
+          <option value="6">6+</option>
+        </select>
+        <select id="sort-filter">
+          <option value="popularity.desc">Most Popular</option>
+          <option value="vote_average.desc">Top Rated</option>
+          <option value="primary_release_date.desc">Newest</option>
+        </select>
+      </div>
+    </nav>
+    <!-- Nav END -->
+    <!-- Main START -->
+    <main id="main-container">&nbsp;</main>
+    <!-- Main END -->
+    <!-- Pag-btn START -->
+    <div class="pagination">
+      <button id="load-btn">Load More Movies</button>
+    </div>
+    <!-- Pag-btn END -->
+    <script src="js/script.js"></script>
+  </body>
+</html>
