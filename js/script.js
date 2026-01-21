@@ -12,6 +12,7 @@ const genreFilter = document.getElementById('genre-filter');
 const yearFilter = document.getElementById('year-filter');
 const rateFilter = document.getElementById('rate-filter');
 const sortFilter = document.getElementById('sort-filter');
+const resetBtn = document.getElementById('reset-btn');
 const loadBtn = document.getElementById('load-btn');
 
 let currentPage = 1;
@@ -155,6 +156,24 @@ function applyFilters() {
   fetchMovies(url);
 }
 
+function resetFilters() {
+  // Clear all and return def
+  searchInput.value = "";
+  genreFilter.value = "";
+  yearFilter.value = "";
+  rateFilter.value = "";
+  sortFilter.value = "popularity.desc";
+
+  // delete session items
+  sessionStorage.removeItem('search_query');
+  sessionStorage.removeItem('filter_genre');
+  sessionStorage.removeItem('filter_year');
+  sessionStorage.removeItem('filter_rate');
+  sessionStorage.removeItem('filter_sort');
+
+  fetchMovies(`${BASE_URL}/discover/movie?sort_by=popularity.desc&api_key=${API_KEY}`);
+}
+
 // Home page
 async function initHomePage() {
   // Load drop menus options
@@ -181,9 +200,10 @@ async function initHomePage() {
   else {
     fetchMovies(`${BASE_URL}/discover/movie?sort_by=popularity.desc&api_key=${API_KEY}`);
   }
-
+  // Btns action
   searchBtn.addEventListener('click', Search);
   searchInput.addEventListener('keyup', (e) => { if (e.key === 'Enter') Search(); });
+  resetBtn.addEventListener('click', resetFilters);
 
   [genreFilter, yearFilter, sortFilter, rateFilter].forEach(el => {
     el.addEventListener('change', applyFilters);
@@ -235,6 +255,4 @@ async function loadMovieDetails() {
     container.innerHTML = "<h2>Error loading details.</h2>";
     console.error(error);
   }
-
 }
-

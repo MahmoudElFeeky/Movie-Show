@@ -121,9 +121,31 @@ header {
   transition: transform 0.2s, background-color 0.2s;
   &:hover {
     background-color: #b20710;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    transform: translateY(-2px);
   }
   &:active {
     transform: scale(0.50);
+  }
+}
+#reset-btn {
+  padding: 12px 20px;
+  background-color: red;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.95rem;
+  margin-left: 10px;
+  align-self: center; 
+  transition: all 0.2s ease;
+  &:hover {
+    background-color: #b20710;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    transform: translateY(-2px);
+  }
+  &:active {
+    transform: scale(0.9);
   }
 }
 /* Dark Mode */
