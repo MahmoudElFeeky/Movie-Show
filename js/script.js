@@ -225,8 +225,9 @@ async function loadMovieDetails() {
         <p><strong>Duration:</strong> ${runtime} mins</p>
         <p><strong>Director:</strong> ${director}</p>
         <p><strong>Cast:</strong> ${castList}</p>
-        <h3 style="margin-top: 20px;">Overview</h3>
-        <p style="line-height: 1.6;">${overview}</p>
+        ${overview ? 
+          `<h3 style="margin-top: 20px;">Overview</h3>
+          <p style="line-height: 1.6;">${overview}</p>` : ''}
         ${trailer ? `<a href="https://www.youtube.com/watch?v=${trailer}" target="_blank" class="view-btn" style="margin-top:20px; display:inline-block;">Watch Trailer</a>` : ''}
       </div>
     `;
@@ -236,3 +237,4 @@ async function loadMovieDetails() {
   }
 
 }
+
