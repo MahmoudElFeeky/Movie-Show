@@ -316,3 +316,23 @@ body.dark-mode .navbar select {
   }
 }
 /* ==================== Details END */
+
+.fav-btn {
+  position: relative;
+  border: none;
+  cursor: pointer;
+}
+
+.badge {
+  position: absolute;
+  top: -6px;
+  left: -6px;
+  background: red;
+  color: white;
+  font-size: 12px;
+  font-weight: bold;
+  padding: 2px 6px;
+  border-radius: 50%;
+  min-width: 18px;
+  text-align: center;
+}

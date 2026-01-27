@@ -21,13 +21,31 @@ let currentUrl = "";
 // initialize theme and page
 window.addEventListener('load', () => {
   initTheme();
+  calccount();
   if (window.location.pathname.includes('movie.html')) {
     loadMovieDetails();
-  } else {
+  } 
+  else if(window.location.pathname.includes('fav.html')){
+    initFav();
+  }  
+  else{
     initHomePage();
   }
 });
+function calccount()
+{
+  let count = localStorage.getItem("count");
+  if(count==null)
+  {
+    count=0;
+    localStorage.setItem("count",JSON.stringify(count));
+  }else{
+    count = JSON.parse(count);
+  }
+  let favcount = document.getElementById("favCount");
+  favcount.textContent = count;
 
+}
 function initTheme() {
   const isDark = localStorage.getItem('darkMode') === 'true';
   if (isDark) document.body.classList.add('dark-mode');
@@ -63,12 +81,21 @@ function loadYears() {
 
 // Movies cards
 function showMovies(movies) {
+  let items = localStorage.getItem("fav");
+  if(items!= null && items.length!= 0)
+  {
+    items = JSON.parse(items);
+  }else
+  {
+    items = [];
+  }
   movies.forEach(movie => {
     const { title, poster_path, vote_average, overview, id } = movie;
     if(!poster_path) return;
 
     const movieEl = document.createElement('div');
     movieEl.classList.add('movie-card');
+    movieEl.id=id;
     movieEl.innerHTML = 
     `
       <img src="${IMG_URL + poster_path}" alt="${title}">
@@ -79,6 +106,10 @@ function showMovies(movies) {
         </div>
         <p class="card-overview">${overview ? overview : "No description."}</p>
         <a href="movie.html?id=${id}" class="view-btn">View Details</a>
+        <button id ="add${id}" style="border :none ;display:${items.includes(id)?"none":"block"}" onclick="addtofav(${id})" class="view-btn">Add to favourites</button>
+        <button id ="remove${id}" style="border :none ;display:${items.includes(id)?"block":"none"}" onclick="removeformfav(${id})" class="view-btn">remove from favourites</button>
+
+
       </div>
     `;
 
@@ -233,7 +264,15 @@ async function loadMovieDetails() {
     const director = foundDirector ? foundDirector.name : 'N/A';
     const foundTrailer = videos.results.find(v => v.type === 'Trailer');
     const trailer = foundTrailer ? foundTrailer.key : undefined;
+    let items = localStorage.getItem("fav");
+    if(items!=null)
+    {
+      items = JSON.parse(items);
 
+    }
+    else{
+      items = [];
+    }
     container.innerHTML = 
     `
       <img src="${poster_path ? IMG_URL + poster_path : 'placeholder.jpg'}" class="details-poster" alt="${title}">
@@ -249,10 +288,119 @@ async function loadMovieDetails() {
           `<h3 style="margin-top: 20px;">Overview</h3>
           <p style="line-height: 1.6;">${overview}</p>` : ''}
         ${trailer ? `<a href="https://www.youtube.com/watch?v=${trailer}" target="_blank" class="view-btn" style="margin-top:20px; display:inline-block;">Watch Trailer</a>` : ''}
+        <button id ="add${data.id}" style="border :none ; margin-top:10px ;display:${items.includes(data.id)?"none":"block"}" onclick="addtofav(${data.id})" class="view-btn">Add to favourites</button>
+        <button id ="remove${data.id}" style="border :none ; margin-top:10px  ;display:${items.includes(data.id)?"block":"none"}" onclick="removeformfav(${data.id})" class="view-btn">remove from favourites</button>
       </div>
     `;
   } catch (error) {
     container.innerHTML = "<h2>Error loading details.</h2>";
     console.error(error);
   }
+}
+async function initFav() {
+    let items = localStorage.getItem("fav");
+    items = JSON.parse(items);
+    const container = document.getElementById('main-container');
+    if(items== null || items.length ==0)
+    {
+      container.innerHTML = "<h2>You don't have Movies in favourites yet .</h2>";
+      return;
+    }  
+    try {
+      
+      let json_data=[];
+      for(movie in items)
+      {
+        // console.log(items[movie])
+        const res = await fetch(`${BASE_URL}/movie/${items[movie]}?api_key=${API_KEY}&append_to_response=credits,videos`);
+        const status = await res.status;
+        if(status != 200 )
+        {
+            continue;
+        }
+        const data = await res.json();
+        let temp = {
+          title :data.title,
+          poster_path : data.poster_path,
+          vote_average : data.vote_average,
+          overview: data.overview, 
+          id : data.id
+        }
+        json_data.push(temp);
+      }
+      container.innerHTML="";
+      showMovies(json_data);
+
+
+  } catch (error) {
+    container.innerHTML = "<h2>Error loading details.</h2>";
+    console.error(error);
+  }
+  
+}
+function addtofav(id)
+{
+  let count = localStorage.getItem("count");
+  count = JSON.parse(count);
+  count++;
+  let favcount = document.getElementById("favCount");
+  favcount.textContent = count;
+  localStorage.setItem("count",count);
+  const add = document.getElementById(`add${id}`);
+  add.style.display="none";
+  const remove = document.getElementById(`remove${id}`);
+  remove.style.display="block";
+  let items = localStorage.getItem("fav");
+  if(items ==null )
+  {
+    items = [];
+    items.push(id);
+    localStorage.setItem("fav", JSON.stringify(items));
+    return;
+  }
+  else
+  {
+    items = JSON.parse(items);
+    if(!items.includes(id))
+    {
+      items.push(id);
+      localStorage.setItem("fav", JSON.stringify(items));
+    }
+  }
+}
+function removeformfav(id)
+{
+  let count = localStorage.getItem("count");
+  count = JSON.parse(count);
+  count--;
+  if(count <0) count=0;
+  let favcount = document.getElementById("favCount");
+  favcount.textContent = count;
+  localStorage.setItem("count",JSON.stringify(count));
+
+
+  let status = confirm("Are you sure to remove this film from favourites ? ");
+  if(status)
+  {
+    const add = document.getElementById(`add${id}`);
+    add.style.display="block";
+    const remove = document.getElementById(`remove${id}`);
+    remove.style.display="none";
+    let items = localStorage.getItem("fav");
+    items = JSON.parse(items);
+    items = items.filter(item=>item != id);
+    localStorage.setItem("fav", JSON.stringify(items));
+    if(window.location.pathname.includes('fav.html'))
+    {
+      const deleted_container = document.getElementById(id);
+      deleted_container.style.display = "none";
+      if(items.length==0)
+      {
+        const container = document.getElementById('main-container');
+        container.innerHTML = "<h2>You don't have Movies in favourites yet .</h2>";
+      }
+    }
+  }
+  
+  
 }
